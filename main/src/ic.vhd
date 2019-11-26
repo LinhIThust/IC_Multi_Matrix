@@ -84,4 +84,30 @@ architecture write_byte of nine_byte_register is
 		DOUT7<=s7;
 		DOUT8<=s8;
 		DOUT9<=s9;	
-end architecture write_byte;
+end architecture write_byte;  
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_signed.all;
+
+
+entity demux2to1 is
+    Port(DataIn: in std_logic_vector(7 downto 0);
+		EnW: in std_logic;
+		SelAB: in std_logic;
+        OutA,OutB: out std_logic_vector(7 downto 0)
+		  );
+end entity demux2to1;
+
+architecture demux2to1 of demux2to1 is
+begin
+	process (DataIn,SelAB)
+	begin
+		if SelAB = '1' then
+				OutA <= DataIn;
+		else
+				OutB <= DataIn;
+		end if;
+	end process;
+end architecture demux2to1;
