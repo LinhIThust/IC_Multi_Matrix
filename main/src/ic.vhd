@@ -64,7 +64,7 @@ architecture write_byte of nine_byte_register is
 		CLK,RST: in std_logic;
 		DOUT: out std_logic_vector(7downto 0)
 		);
-	end component eight_bit_register;	
+	end component eight_bit_register;
 	begin
 		U1:eight_bit_register port map(DIN,CLK,RST,s1 );
 		U2:eight_bit_register port map(s1,CLK,RST,s2 );
@@ -96,16 +96,14 @@ entity demux2to1 is
     Port(DataIn: in std_logic_vector(7 downto 0);
 		EnW: in std_logic;
 		SelAB: in std_logic;
-        OutA,OutB: out std_logic_vector(7 downto 0);
-		EnOut: out std_logic
-		  );
+        OutA,OutB: out std_logic_vector(7 downto 0)
+		);
 end entity demux2to1;
 
 architecture demux2to1 of demux2to1 is
 begin
 	process (DataIn,SelAB,EnW)
 	begin
-		EnOut <= EnW;
 		if EnW= '1' then 
 			if SelAB = '1' then
 					OutA <= DataIn;
@@ -183,5 +181,116 @@ begin
 	Result33 <= temp9(7 downto 0);
 end architecture multi;
 
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_signed.all;
+
+entity ic_main is
+	Port(
+	DataIn : in std_logic_vector(7 downto 0);
+	SelRegister: in std_logic;
+	Reset: in std_logic;
+	Clock:in std_logic;
+	SelF: in std_logic_vector(1 downto 0);
+	
+	Out11: out std_logic_vector(7 downto 0);  
+	Out12: out std_logic_vector(7 downto 0);
+	Out13: out std_logic_vector(7 downto 0);
+	Out21: out std_logic_vector(7 downto 0);
+	Out22: out std_logic_vector(7 downto 0);
+	Out23: out std_logic_vector(7 downto 0);
+	Out31: out std_logic_vector(7 downto 0);
+	Out32: out std_logic_vector(7 downto 0);
+	Out33: out std_logic_vector(7 downto 0)
+	);
+end entity ic_main;
+
+architecture ic of ic_main is
+
+component demux2to1 is
+    Port(DataIn: in std_logic_vector(7 downto 0);
+		EnW: in std_logic;
+		SelAB: in std_logic;
+        OutA,OutB: out std_logic_vector(7 downto 0)
+		);
+end component demux2to1; 
+
+component multi_matrix 
+	Port(
+	A11: in std_logic_vector(7 downto 0);
+	A12: in std_logic_vector(7 downto 0);
+	A13: in std_logic_vector(7 downto 0);
+	
+	A21: in std_logic_vector(7 downto 0);
+	A22: in std_logic_vector(7 downto 0);
+	A23: in std_logic_vector(7 downto 0);
+	
+	A31: in std_logic_vector(7 downto 0);
+	A32: in std_logic_vector(7 downto 0);
+	A33: in std_logic_vector(7 downto 0);
+----------------------------------------------	
+	B11: in std_logic_vector(7 downto 0);
+	B12: in std_logic_vector(7 downto 0);
+	B13: in std_logic_vector(7 downto 0);
+	
+	B21: in std_logic_vector(7 downto 0);
+	B22: in std_logic_vector(7 downto 0);
+	B23: in std_logic_vector(7 downto 0);
+	
+	B31: in std_logic_vector(7 downto 0);
+	B32: in std_logic_vector(7 downto 0);
+	B33: in std_logic_vector(7 downto 0); 
+-----------------------------------------------	
+	Result11: out std_logic_vector(7 downto 0);
+	Result12: out std_logic_vector(7 downto 0);
+	Result13: out std_logic_vector(7 downto 0);
+	Result21: out std_logic_vector(7 downto 0);
+	Result22: out std_logic_vector(7 downto 0);
+	Result23: out std_logic_vector(7 downto 0);
+	Result31: out std_logic_vector(7 downto 0);
+	Result32: out std_logic_vector(7 downto 0);
+	Result33: out std_logic_vector(7 downto 0)
+	);
+end component multi_matrix;
+
+component nine_byte_register  
+	port(
+	DIN: in std_logic_vector(7 downto 0);
+	CLK: in std_logic;
+	RST: in std_logic;
+	DOUT1: out std_logic_vector(7 downto 0);
+	DOUT2: out std_logic_vector(7 downto 0);
+	DOUT3: out std_logic_vector(7 downto 0);
+	DOUT4: out std_logic_vector(7 downto 0);
+	DOUT5: out std_logic_vector(7 downto 0);
+	DOUT6: out std_logic_vector(7 downto 0);
+	DOUT7: out std_logic_vector(7 downto 0);
+	DOUT8: out std_logic_vector(7 downto 0);  
+	DOUT9: out std_logic_vector(7 downto 0)
+	); 	
+end component nine_byte_register;
+
+signal toA,a11,a12,a13,a21,a22,a23,a31,a32,a33: std_logic_vector(7 downto 0);
+signal toB,b11,b12,b13,b21,b22,b23,b31,b32,b33: std_logic_vector(7 downto 0);
+signal out1,out2,out3,out4,out5,out6,out7,out8,out9:std_logic_vector(7 downto 0);
+
+
+begin
+	A:nine_byte_register port map(toA,Clock,Reset,a11,a12,a13,a21,a22,a23,a31,a32,a33);
+	B:nine_byte_register port map(toB,Clock,Reset,b11,b12,b13,b21,b22,b23,b31,b32,b33);
+	Multi:multi_matrix port map(a11,a12,a13,a21,a22,a23,a31,a32,a33,b11,b12,b13,b21,b22,b23,b31,b32,b33,out1,out2,out3,out4,out5,out6,out7,out8,out9);
+	Demux:demux2to1 port map(DataIn,Clock,SelRegister,toA,toB);	 
+	Out11 <= out1;
+	Out12 <= out2;
+	Out13 <= out3;
+	Out21 <= out4;
+	Out22 <= out5;
+	Out23 <= out6;
+	Out31 <= out7;
+	Out32 <= out8;
+	Out33 <= out9;
+
+end architecture ic;
 
 
