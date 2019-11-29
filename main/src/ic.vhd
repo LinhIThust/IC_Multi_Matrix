@@ -112,7 +112,35 @@ begin
 			end if;
 		end if;
 	end process;
-end architecture demux2to1;	  
+end architecture demux2to1;	
+
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_signed.all;
+
+
+entity mux is
+    Port(DataIn,MatrixIn1,MatrixIn2: in std_logic_vector(7 downto 0);
+		SelF:in std_logic_vector(1 downto 0);
+        outB: out std_logic_vector(7 downto 0)
+		);
+end entity mux;
+
+architecture chooseIn of mux is
+begin
+	process (SelF)
+	begin
+		if SelF = "01" then
+				outB <= MatrixIn1;
+		elsif SelF ="10" then
+			outB <= MatrixIn2;
+		elsif SelF ="00" then
+			outB <= DataIn;
+		end if;
+	end process;
+end architecture chooseIn;
 
 
 library ieee;
