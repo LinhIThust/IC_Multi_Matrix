@@ -23,7 +23,40 @@ begin
 				end if;	
 			end if;
 		end process;
-end architecture eight_register;  
+end architecture eight_register; 
+ ---------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_signed.all;
+
+
+entity mux is
+    Port(
+		CLK: std_logic;
+		DataIn,MatrixIn1,MatrixIn2: in std_logic_vector(7 downto 0);
+		SelF:in std_logic_vector(1 downto 0);
+        outB: out std_logic_vector(7 downto 0)
+		);
+end entity mux;
+
+architecture chooseIn of mux is
+begin
+	process (SelF,CLk)
+	begin
+		if rising_edge(CLK) then
+			if SelF = "01" then
+				outB <= MatrixIn1;
+			elsif SelF ="10" then
+				outB <= MatrixIn2;
+			elsif SelF ="00" then
+				outB <= DataIn;
+			end if;
+		end if;
+	end process;
+end architecture chooseIn;
+
+-----------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -35,6 +68,7 @@ entity nine_byte_register is
 	DIN: in std_logic_vector(7 downto 0);
 	CLK: in std_logic;
 	RST: in std_logic;
+	SelF:in std_logic_vector(1 downto 0);
 	DOUT1: out std_logic_vector(7 downto 0);
 	DOUT2: out std_logic_vector(7 downto 0);
 	DOUT3: out std_logic_vector(7 downto 0);
@@ -47,7 +81,6 @@ entity nine_byte_register is
 	); 	
 end entity nine_byte_register;	
 
-
 architecture write_byte of nine_byte_register is 
 	signal s1:std_logic_vector(7 downto 0);	 
 	signal s2:std_logic_vector(7 downto 0);
@@ -58,6 +91,10 @@ architecture write_byte of nine_byte_register is
 	signal s7:std_logic_vector(7 downto 0);	
 	signal s8:std_logic_vector(7 downto 0);
 	signal s9:std_logic_vector(7 downto 0);
+	signal DIN1,DIN2,DIN3,DIN4,DIN5,DIN6,DIN7,DIN8,DIN9: std_logic_vector(7 downto 0);
+	type matrixB is array(8 downto 0) of std_logic_vector(7 downto 0);
+	signal matrixb1: matrixB;
+	signal matrixb2:matrixB;
 	component eight_bit_register 
 		port(
 		DIN: in std_logic_vector(7 downto 0);
@@ -65,26 +102,44 @@ architecture write_byte of nine_byte_register is
 		DOUT: out std_logic_vector(7downto 0)
 		);
 	end component eight_bit_register;
+	component mux
+	    Port(
+			clk:std_logic;
+			DataIn,MatrixIn1,MatrixIn2: in std_logic_vector(7 downto 0);
+			SelF:in std_logic_vector(1 downto 0);
+	        outB: out std_logic_vector(7 downto 0)
+			);
+	end component mux;
+	
 	begin
-		U1:eight_bit_register port map(DIN,CLK,RST,s1 );
-		U2:eight_bit_register port map(s1,CLK,RST,s2 );
-		U3:eight_bit_register port map(s2,CLK,RST,s3 );
-		U4:eight_bit_register port map(s3,CLK,RST,s4 );
-		U5:eight_bit_register port map(s4,CLK,RST,s5 );
-		U6:eight_bit_register port map(s5,CLK,RST,s6 );
-		U7:eight_bit_register port map(s6,CLK,RST,s7 );
-		U8:eight_bit_register port map(s7,CLK,RST,s8 );
-		U9:eight_bit_register port map(s8,CLK,RST,s9 );
-		DOUT1<=s1;	 
-		DOUT2<=s2;
-		DOUT3<=s3;
-		DOUT4<=s4;
-		DOUT5<=s5;
-		DOUT6<=s6;
-		DOUT7<=s7;
-		DOUT8<=s8;
-		DOUT9<=s9;	
+		matrixb1(0) <="00001101";matrixb1(1) <="00001111";matrixb1(2) <="00001111";matrixb1(3) <="00001111";
+		matrixb1(4) <="00001111";matrixb1(5) <="00001101";matrixb1(6) <="00001111";matrixb1(7) <="00001111";
+		matrixb1(8) <="00001111";
+		matrixb2(0) <="10101101";matrixb2(1) <="00001111";matrixb2(2) <="00101111";matrixb2(3) <="00001101";
+		matrixb2(4) <="10101111";matrixb2(5) <="00001101";matrixb2(6) <="00011111";matrixb2(7) <="00000001";
+		matrixb2(8) <="10101111";
+		
+		M1:mux port map(CLK,DIN,matrixb1(0),matrixb2(0),SelF,DIN1);
+		M2:mux port map(CLK,DIN1,matrixb1(1),matrixb2(1),SelF,DIN2);
+		M3:mux port map(CLK,DIN2,matrixb1(2),matrixb2(2),SelF,DIN3);
+		M4:mux port map(CLK,DIN3,matrixb1(3),matrixb2(3),SelF,DIN4);
+		M5:mux port map(CLK,DIN4,matrixb1(4),matrixb2(4),SelF,DIN5);
+		M6:mux port map(CLK,DIN5,matrixb1(5),matrixb2(5),SelF,DIN6);
+		M7:mux port map(CLK,DIN6,matrixb1(6),matrixb2(6),SelF,DIN7);
+		M8:mux port map(CLK,DIN7,matrixb1(7),matrixb2(7),SelF,DIN8);
+		M9:mux port map(CLK,DIN8,matrixb1(8),matrixb2(8),SelF,DIN9); 
+		U1:eight_bit_register port map(DIN1,CLK,RST,dOUT1 );
+		U2:eight_bit_register port map(DIN2,CLK,RST,DOUT2 );
+		U3:eight_bit_register port map(DIN3,CLK,RST,DOUT3 );
+		U4:eight_bit_register port map(DIN4,CLK,RST,DOUT4 );
+		U5:eight_bit_register port map(DIN5,CLK,RST,DOUT5 );
+		U6:eight_bit_register port map(DIN6,CLK,RST,DOUT6 );
+		U7:eight_bit_register port map(DIN7,CLK,RST,DOUT7 );
+		U8:eight_bit_register port map(DIN8,CLK,RST,DOUT8 );
+		U9:eight_bit_register port map(DIN9,CLK,RST,DOUT9 );
+		
 end architecture write_byte;  
+-----------------------------------------------------------------
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -114,35 +169,7 @@ begin
 	end process;
 end architecture demux2to1;	
 
-
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.std_logic_arith.all;
-use ieee.std_logic_signed.all;
-
-
-entity mux is
-    Port(DataIn,MatrixIn1,MatrixIn2: in std_logic_vector(7 downto 0);
-		SelF:in std_logic_vector(1 downto 0);
-        outB: out std_logic_vector(7 downto 0)
-		);
-end entity mux;
-
-architecture chooseIn of mux is
-begin
-	process (SelF)
-	begin
-		if SelF = "01" then
-				outB <= MatrixIn1;
-		elsif SelF ="10" then
-			outB <= MatrixIn2;
-		elsif SelF ="00" then
-			outB <= DataIn;
-		end if;
-	end process;
-end architecture chooseIn;
-
-
+---------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
@@ -209,6 +236,8 @@ begin
 	Result33 <= temp9(7 downto 0);
 end architecture multi;
 
+
+----------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
@@ -236,13 +265,13 @@ end entity ic_main;
 
 architecture ic of ic_main is
 
-component demux2to1 is
+component demux2to1
     Port(DataIn: in std_logic_vector(7 downto 0);
 		EnW: in std_logic;
 		SelAB: in std_logic;
         OutA,OutB: out std_logic_vector(7 downto 0)
 		);
-end component demux2to1; 
+end component demux2to1;
 
 component multi_matrix 
 	Port(
@@ -282,11 +311,12 @@ component multi_matrix
 	);
 end component multi_matrix;
 
-component nine_byte_register  
+component nine_byte_register 
 	port(
 	DIN: in std_logic_vector(7 downto 0);
 	CLK: in std_logic;
 	RST: in std_logic;
+	SelF:in std_logic_vector(1 downto 0);
 	DOUT1: out std_logic_vector(7 downto 0);
 	DOUT2: out std_logic_vector(7 downto 0);
 	DOUT3: out std_logic_vector(7 downto 0);
@@ -305,8 +335,8 @@ signal out1,out2,out3,out4,out5,out6,out7,out8,out9:std_logic_vector(7 downto 0)
 
 
 begin
-	A:nine_byte_register port map(toA,Clock,Reset,a11,a12,a13,a21,a22,a23,a31,a32,a33);
-	B:nine_byte_register port map(toB,Clock,Reset,b11,b12,b13,b21,b22,b23,b31,b32,b33);
+	A:nine_byte_register port map(toA,Clock,Reset,SelF,a11,a12,a13,a21,a22,a23,a31,a32,a33);
+	B:nine_byte_register port map(toB,Clock,Reset,SelF,b11,b12,b13,b21,b22,b23,b31,b32,b33);
 	Multi:multi_matrix port map(a11,a12,a13,a21,a22,a23,a31,a32,a33,b11,b12,b13,b21,b22,b23,b31,b32,b33,out1,out2,out3,out4,out5,out6,out7,out8,out9);
 	Demux:demux2to1 port map(DataIn,Clock,SelRegister,toA,toB);	 
 	Out11 <= out1;
