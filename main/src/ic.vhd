@@ -33,6 +33,7 @@ use ieee.std_logic_signed.all;
 
 entity mux is
     Port(
+		
 		CLK: std_logic;
 		DataIn,MatrixIn1,MatrixIn2: in std_logic_vector(7 downto 0);
 		SelF:in std_logic_vector(1 downto 0);
@@ -112,12 +113,12 @@ architecture write_byte of nine_byte_register is
 	end component mux;
 	
 	begin
-		matrixb1(0) <="00001101";matrixb1(1) <="00001111";matrixb1(2) <="00001111";matrixb1(3) <="00001111";
-		matrixb1(4) <="00001111";matrixb1(5) <="00001101";matrixb1(6) <="00001111";matrixb1(7) <="00001111";
-		matrixb1(8) <="00001111";
-		matrixb2(0) <="10101101";matrixb2(1) <="00001111";matrixb2(2) <="00101111";matrixb2(3) <="00001101";
-		matrixb2(4) <="10101111";matrixb2(5) <="00001101";matrixb2(6) <="00011111";matrixb2(7) <="00000001";
-		matrixb2(8) <="10101111";
+		matrixb1(0) <="00000010";matrixb1(1) <="00000000";matrixb1(2) <="11111110";
+		matrixb1(3) <="00000011";matrixb1(4) <="00000000";matrixb1(5) <="11111101";
+		matrixb1(6) <="00000010";matrixb1(7) <="00000000";matrixb1(8) <="00000010";	   
+		matrixb2(0) <="00000000";matrixb2(1) <="00000001";matrixb2(2) <="00000010";
+		matrixb2(3) <="00000011";matrixb2(4) <="00000100";matrixb2(5) <="00000101";
+		matrixb2(6) <="00000110";matrixb2(7) <="00000111";matrixb2(8) <="00001000";
 		
 		M1:mux port map(CLK,DIN,matrixb1(0),matrixb2(0),SelF,DIN1);
 		M2:mux port map(CLK,DIN1,matrixb1(1),matrixb2(1),SelF,DIN2);
@@ -159,7 +160,7 @@ architecture demux2to1 of demux2to1 is
 begin
 	process (DataIn,SelAB,EnW)
 	begin
-		if EnW= '1' then 
+		if rising_edge(EnW) then 
 			if SelAB = '1' then
 					OutA <= DataIn;
 			else
@@ -232,7 +233,7 @@ begin
 	Result31 <= temp7(7 downto 0);
 	temp8 <= (A31*B12+A32*B23+A33*B32);
 	Result32 <= temp8(7 downto 0);
-	temp9 <= (A31*B33+A32*B23+A33*B33);
+	temp9 <= (A31*B13+A32*B23+A33*B33);
 	Result33 <= temp9(7 downto 0);
 end architecture multi;
 
@@ -335,14 +336,14 @@ signal out1,out2,out3,out4,out5,out6,out7,out8,out9:std_logic_vector(7 downto 0)
 
 
 begin
-	A:nine_byte_register port map(toA,Clock,Reset,SelF,a11,a12,a13,a21,a22,a23,a31,a32,a33);
+	A:nine_byte_register port map(toA,Clock,Reset,"00",a11,a12,a13,a21,a22,a23,a31,a32,a33);
 	B:nine_byte_register port map(toB,Clock,Reset,SelF,b11,b12,b13,b21,b22,b23,b31,b32,b33);
 	Multi:multi_matrix port map(a11,a12,a13,a21,a22,a23,a31,a32,a33,b11,b12,b13,b21,b22,b23,b31,b32,b33,out1,out2,out3,out4,out5,out6,out7,out8,out9);
 	Demux:demux2to1 port map(DataIn,Clock,SelRegister,toA,toB);	 
 	Out11 <= out1;
 	Out12 <= out2;
 	Out13 <= out3;
-	Out21 <= out4;
+	Out21 <= out4;					  			    
 	Out22 <= out5;
 	Out23 <= out6;
 	Out31 <= out7;
