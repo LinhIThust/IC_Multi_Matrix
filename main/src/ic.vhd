@@ -45,14 +45,12 @@ architecture chooseIn of mux is
 begin
 	process (SelF,CLk)
 	begin
-		if rising_edge(CLK) then
-			if SelF = "01" then
-				outB <= MatrixIn1;
-			elsif SelF ="10" then
-				outB <= MatrixIn2;
-			elsif SelF ="00" then
-				outB <= DataIn;
-			end if;
+		if SelF = "01" then
+			outB <= MatrixIn1;
+		elsif SelF ="10" then
+			outB <= MatrixIn2;
+		elsif SelF ="00" then
+			outB <= DataIn;
 		end if;
 	end process;
 end architecture chooseIn;
@@ -119,25 +117,42 @@ architecture write_byte of nine_byte_register is
 		matrixb2(0) <="00000000";matrixb2(1) <="00000001";matrixb2(2) <="00000010";
 		matrixb2(3) <="00000011";matrixb2(4) <="00000100";matrixb2(5) <="00000101";
 		matrixb2(6) <="00000110";matrixb2(7) <="00000111";matrixb2(8) <="00001000";
-		
 		M1:mux port map(CLK,DIN,matrixb1(0),matrixb2(0),SelF,DIN1);
-		M2:mux port map(CLK,DIN1,matrixb1(1),matrixb2(1),SelF,DIN2);
-		M3:mux port map(CLK,DIN2,matrixb1(2),matrixb2(2),SelF,DIN3);
-		M4:mux port map(CLK,DIN3,matrixb1(3),matrixb2(3),SelF,DIN4);
-		M5:mux port map(CLK,DIN4,matrixb1(4),matrixb2(4),SelF,DIN5);
-		M6:mux port map(CLK,DIN5,matrixb1(5),matrixb2(5),SelF,DIN6);
-		M7:mux port map(CLK,DIN6,matrixb1(6),matrixb2(6),SelF,DIN7);
-		M8:mux port map(CLK,DIN7,matrixb1(7),matrixb2(7),SelF,DIN8);
-		M9:mux port map(CLK,DIN8,matrixb1(8),matrixb2(8),SelF,DIN9); 
-		U1:eight_bit_register port map(DIN1,CLK,RST,dOUT1 );
-		U2:eight_bit_register port map(DIN2,CLK,RST,DOUT2 );
-		U3:eight_bit_register port map(DIN3,CLK,RST,DOUT3 );
-		U4:eight_bit_register port map(DIN4,CLK,RST,DOUT4 );
-		U5:eight_bit_register port map(DIN5,CLK,RST,DOUT5 );
-		U6:eight_bit_register port map(DIN6,CLK,RST,DOUT6 );
-		U7:eight_bit_register port map(DIN7,CLK,RST,DOUT7 );
-		U8:eight_bit_register port map(DIN8,CLK,RST,DOUT8 );
-		U9:eight_bit_register port map(DIN9,CLK,RST,DOUT9 );
+		U1:eight_bit_register port map(DIN1,CLK,RST,s1 );
+		M2:mux port map(CLK,s1,matrixb1(1),matrixb2(1),SelF,DIN2);
+		U2:eight_bit_register port map(DIN2,CLK,RST,s2 );
+		M3:mux port map(CLK,s2,matrixb1(2),matrixb2(2),SelF,DIN3);
+		U3:eight_bit_register port map(DIN3,CLK,RST,s3 );
+		M4:mux port map(CLK,s3,matrixb1(3),matrixb2(3),SelF,DIN4); 
+		U4:eight_bit_register port map(DIN4,CLK,RST,s4 );
+		M5:mux port map(CLK,s4,matrixb1(4),matrixb2(4),SelF,DIN5);
+		U5:eight_bit_register port map(DIN5,CLK,RST,s5 );
+		M6:mux port map(CLK,s5,matrixb1(5),matrixb2(5),SelF,DIN6);
+		U6:eight_bit_register port map(DIN6,CLK,RST,s6 );
+		M7:mux port map(CLK,s6,matrixb1(6),matrixb2(6),SelF,DIN7);
+		U7:eight_bit_register port map(DIN7,CLK,RST,s7 );
+		M8:mux port map(CLK,s7,matrixb1(7),matrixb2(7),SelF,DIN8);
+		U8:eight_bit_register port map(DIN8,CLK,RST,s8 );
+		M9:mux port map(CLK,s8,matrixb1(8),matrixb2(8),SelF,DIN9); 
+		U9:eight_bit_register port map(DIN9,CLK,RST,s9 ); 
+		DOUT1<=s1;	 
+		DOUT2<=s2;
+		DOUT3<=s3;
+		DOUT4<=s4;
+		DOUT5<=s5;	
+		DOUT6<=s6;
+		DOUT7<=s7;
+		DOUT8<=s8;
+		DOUT9<=s9;
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 end architecture write_byte;  
 -----------------------------------------------------------------
