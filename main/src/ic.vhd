@@ -33,6 +33,7 @@ use ieee.std_logic_signed.all;
 
 entity mux is
     Port(
+		clk:in std_logic;
 		DataIn,MatrixIn1,MatrixIn2: in std_logic_vector(7 downto 0);
 		SelF:in std_logic_vector(1 downto 0);
         outB: out std_logic_vector(7 downto 0)
@@ -41,7 +42,7 @@ end entity mux;
 
 architecture chooseIn of mux is
 begin
-	process (SelF)
+	process (SelF,clk)
 	begin
 		if SelF = "01" then
 			outB <= MatrixIn1;
@@ -85,6 +86,7 @@ architecture write_byte of nine_byte_register is
 	end component eight_bit_register;
 	component mux
 	    Port(
+			clk:in std_logic;
 			DataIn,MatrixIn1,MatrixIn2: in std_logic_vector(7 downto 0);
 			SelF:in std_logic_vector(1 downto 0);
 	        outB: out std_logic_vector(7 downto 0)
@@ -98,23 +100,23 @@ architecture write_byte of nine_byte_register is
 		matrixb2(0) <="00000000";matrixb2(1) <="00000001";matrixb2(2) <="00000010";
 		matrixb2(3) <="00000011";matrixb2(4) <="00000100";matrixb2(5) <="00000101";
 		matrixb2(6) <="00000110";matrixb2(7) <="00000111";matrixb2(8) <="00001000";
-		M1:mux port map(DIN,matrixb1(0),matrixb2(0),SelF,DIN1);
+		M1:mux port map(CLK,DIN,matrixb1(0),matrixb2(0),SelF,DIN1);
 		U1:eight_bit_register port map(DIN1,CLK,RST,s1 );
-		M2:mux port map(s1,matrixb1(1),matrixb2(1),SelF,DIN2);
+		M2:mux port map(CLK,s1,matrixb1(1),matrixb2(1),SelF,DIN2);
 		U2:eight_bit_register port map(DIN2,CLK,RST,s2 );
-		M3:mux port map(s2,matrixb1(2),matrixb2(2),SelF,DIN3);
+		M3:mux port map(CLK,s2,matrixb1(2),matrixb2(2),SelF,DIN3);
 		U3:eight_bit_register port map(DIN3,CLK,RST,s3 );
-		M4:mux port map(s3,matrixb1(3),matrixb2(3),SelF,DIN4); 
+		M4:mux port map(CLK,s3,matrixb1(3),matrixb2(3),SelF,DIN4); 
 		U4:eight_bit_register port map(DIN4,CLK,RST,s4 );
-		M5:mux port map(s4,matrixb1(4),matrixb2(4),SelF,DIN5);
+		M5:mux port map(CLK,s4,matrixb1(4),matrixb2(4),SelF,DIN5);
 		U5:eight_bit_register port map(DIN5,CLK,RST,s5 );
-		M6:mux port map(s5,matrixb1(5),matrixb2(5),SelF,DIN6);
+		M6:mux port map(CLK,s5,matrixb1(5),matrixb2(5),SelF,DIN6);
 		U6:eight_bit_register port map(DIN6,CLK,RST,s6 );
-		M7:mux port map(s6,matrixb1(6),matrixb2(6),SelF,DIN7);
+		M7:mux port map(CLK,s6,matrixb1(6),matrixb2(6),SelF,DIN7);
 		U7:eight_bit_register port map(DIN7,CLK,RST,s7 );
-		M8:mux port map(s7,matrixb1(7),matrixb2(7),SelF,DIN8);
+		M8:mux port map(CLK,s7,matrixb1(7),matrixb2(7),SelF,DIN8);
 		U8:eight_bit_register port map(DIN8,CLK,RST,s8 );
-		M9:mux port map(s8,matrixb1(8),matrixb2(8),SelF,DIN9); 
+		M9:mux port map(CLK,s8,matrixb1(8),matrixb2(8),SelF,DIN9); 
 		U9:eight_bit_register port map(DIN9,CLK,RST,s9 ); 
 		DOUT1<=s1;	 
 		DOUT2<=s2;
@@ -135,7 +137,9 @@ use ieee.std_logic_signed.all;
 
 
 entity demux2to1 is
-    Port(DataIn: in std_logic_vector(7 downto 0);
+    Port(
+		CLK:in std_logic;
+		DataIn: in std_logic_vector(7 downto 0);
 		SelAB: in std_logic;
         OutA,OutB: out std_logic_vector(7 downto 0)
 		);
@@ -143,7 +147,7 @@ end entity demux2to1;
 
 architecture demux2to1 of demux2to1 is
 begin
-	process (DataIn,SelAB)
+	process (DataIn)
 	begin
 		if SelAB = '1' then
 				OutA <= DataIn;
@@ -212,7 +216,9 @@ end entity ic_main;
 architecture ic of ic_main is
 
 component demux2to1
-    Port(DataIn: in std_logic_vector(7 downto 0);
+    Port(
+		CLK:in std_logic;
+		DataIn: in std_logic_vector(7 downto 0);
 		SelAB: in std_logic;
         OutA,OutB: out std_logic_vector(7 downto 0)
 		);
@@ -246,7 +252,7 @@ begin
 	A:nine_byte_register port map(toA,Clock,Reset,"00",a11,a12,a13,a21,a22,a23,a31,a32,a33);
 	B:nine_byte_register port map(toB,Clock,Reset,SelF,b11,b12,b13,b21,b22,b23,b31,b32,b33);
 	Multi:multi_matrix port map(a11,a12,a13,a21,a22,a23,a31,a32,a33,b11,b12,b13,b21,b22,b23,b31,b32,b33,out1,out2,out3,out4,out5,out6,out7,out8,out9);
-	Demux:demux2to1 port map(DataIn,SelRegister,toA,toB);	 
+	Demux:demux2to1 port map(Clock,DataIn,SelRegister,toA,toB);	 
 	Out11 <= out1;
 	Out12 <= out2;
 	Out13 <= out3;
