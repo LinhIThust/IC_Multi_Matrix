@@ -1,0 +1,13 @@
+[COMPILESTATUS|.\src\v.vhd]
+FileTimeLow=30784402
+Status=Compiled
+[CACHEDOC|Aldec.Project.Generic.7|.\main\main.adf|]
+Path=/ic_main
+[COMPILESTATUS|.\src\block.bde]
+FileTimeLow=30784408
+Status=Modified
+[CACHESIMPLE|Aldec.SymbolsCommands.7]
+main=1
+Built-in symbols=0
+[CACHEDOC|Aldec.BDE.7|.\main\src\block.bde|]
+PROBEBAL=0

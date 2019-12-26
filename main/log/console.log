@@ -1,0 +1,3 @@
+# ELBREAD: Elaboration process.
+# ELBREAD: Elaboration time 0.1 [s].
+open -vhdl {D:\20191\ThietKeIC\final\IC_Multi_Matrix\main\src\ic.vhd}

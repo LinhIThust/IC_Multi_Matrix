@@ -1,0 +1,34 @@
+Active-HDL 10.5.217.6767 2019-12-26 12:47:28
+
+Elaboration top modules:
+Architecture                  ic(ic_main)
+
+
+-----------------------------------------------------------------------------------------------------
+Entity             | Architecture   | Library | Info | Compiler Version        | Compilation Options
+-----------------------------------------------------------------------------------------------------
+ic_main            | ic             | main    |      | 10.5.217.6767 (Windows) | -O3
+nine_byte_register | write_byte     | main    |      | 10.5.217.6767 (Windows) | -O3
+multi_matrix       | multi          | main    |      | 10.5.217.6767 (Windows) | -O3
+demux2to1          | demux2to1      | main    |      | 10.5.217.6767 (Windows) | -O3
+mux                | chooseIn       | main    |      | 10.5.217.6767 (Windows) | -O3
+eight_bit_register | eight_register | main    |      | 10.5.217.6767 (Windows) | -O3
+-----------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------
+VHDL Package                        | Library | Info | Compiler Version        | Compilation Options
+-----------------------------------------------------------------------------------------------------
+standard                            | std     |      |                         | <unavailable>
+TEXTIO                              | std     |      |                         | <unavailable>
+std_logic_1164                      | ieee    |      |                         | <unavailable>
+std_logic_arith                     | ieee    |      |                         | <unavailable>
+STD_LOGIC_SIGNED                    | ieee    |      |                         | <unavailable>
+-----------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------
+Library                             | Comment
+-----------------------------------------------------------------------------------------------------
+ieee                                | Standard IEEE packages library
+main                                | None
+std                                 | Standard VHDL library
+-----------------------------------------------------------------------------------------------------

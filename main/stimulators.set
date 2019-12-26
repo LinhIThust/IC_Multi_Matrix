@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XML>
+	<document type="stimulators" version="1">
+		<set name="ASDB Stimulators" active="1">
+			<stimulator>
+				<signal_path value="/ic_main/Clock"/>
+				<rawdescription value="CLK:FRM:Override:100.000000;2;1;0;50;1:Clock:1:"/>
+			</stimulator>
+			<stimulator>
+				<signal_path value="/ic_main/DataIn"/>
+				<rawdescription value="VAL:FRM:Override:00011011:&lt;= 00011011:1:"/>
+			</stimulator>
+			<stimulator>
+				<signal_path value="/ic_main/Reset"/>
+				<rawdescription value="VAL:FRM:Override:0:&lt;= 0:1:"/>
+			</stimulator>
+			<stimulator>
+				<signal_path value="/ic_main/SelF"/>
+				<rawdescription value="VAL:FRM:Override:01:&lt;= 01:1:"/>
+			</stimulator>
+			<stimulator>
+				<signal_path value="/ic_main/SelRegister"/>
+				<rawdescription value="VAL:FRM:Override:0:&lt;= 0:1:"/>
+			</stimulator>
+		</set>
+	</document>
+</XML>

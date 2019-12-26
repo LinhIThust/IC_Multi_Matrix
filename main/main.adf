@@ -29,3 +29,31 @@ CompileWithDebug=0
 [$LibMap$]
 main=.
 Active_lib=
+[SpecTracer]
+WindowVisible=0
+[HierarchyViewer]
+HierarchyInformation=ic_main|ic|0   
+ShowHide=ShowTopLevel
+Selected=
+[Files]
+/v.vhd=-1
+/block.bde=-1
+[Files.Data]
+.\src\v.vhd=VHDL Source Code
+.\src\block.bde=Block Diagram
+[Folders]
+Name3=Makefiles
+Directory3=d:\20191\ThietKeIC\final\IC_Multi_Matrix\main\
+Extension3=mak
+Name4=Memory
+Directory4=d:\20191\ThietKeIC\final\IC_Multi_Matrix\main\
+Extension4=mem;mif;hex
+Name5=Dll Libraries
+Directory5=d:\20191\ThietKeIC\final\IC_Multi_Matrix\main\
+Extension5=dll
+Name6=PDF
+Directory6=d:\20191\ThietKeIC\final\IC_Multi_Matrix\main\
+Extension6=pdf
+Name7=HTML
+Directory7=d:\20191\ThietKeIC\final\IC_Multi_Matrix\main\
+Extension7=htm;html

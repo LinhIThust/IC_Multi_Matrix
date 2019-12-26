@@ -1,0 +1,1 @@
+-w -erf D:/20191/ThietKeIC/final/IC_Multi_Matrix/main/compile/main.erf -d D:/20191/ThietKeIC/final/IC_Multi_Matrix/main/compile -s D:/20191/ThietKeIC/final/IC_Multi_Matrix/library.cfg -j D:/20191/ThietKeIC/final/IC_Multi_Matrix/main/projlib.cfg -work main -O3 -e 100 -work main -2002 D:/20191/ThietKeIC/final/IC_Multi_Matrix/main/src/v.vhd 
