@@ -1,4 +1,4 @@
-library ieee;
+											  library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 use ieee.std_logic_signed.all; 
@@ -42,7 +42,7 @@ end entity mux;
 
 architecture chooseIn of mux is
 begin
-	process (SelF,clk)
+	process (SelF,clk,DataIn,MatrixIn1,MatrixIn2)
 	begin
 		if SelF = "01" then
 			outB <= MatrixIn1;
